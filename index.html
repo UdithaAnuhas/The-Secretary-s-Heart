@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Secretary's Heart</title>
+    <meta name="description" content="A love story inspired by true events - The Secretary's Heart">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Great+Vibes&family=Caveat:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'serif': ['Playfair Display', 'serif'],
+                        'body': ['Lora', 'serif'],
+                        'script': ['Great Vibes', 'cursive'],
+                    },
+                    colors: {
+                        rose: { 950: '#1a0a10' },
+                        blush: '#f9e4ec',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: #0d0a12;
+        }
+
+        /* Background layer containers */
+        #stars, #petals, #hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: visible;
+            will-change: transform;
+        }
+
+        /* Floating hearts */
+        .heart-float {
+            position: absolute;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0;
+            animation: floatUp 8s ease-in infinite;
+            font-size: 1.2rem;
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 0;
+                transform: translateY(100vh) scale(0.5) rotate(0deg);
+            }
+
+            20% {
+                opacity: 0.6;
+            }
+
+            80% {
+                opacity: 0.3;
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(-10vh) scale(1.2) rotate(45deg);
+            }
+        }
+
+        /* Chapter reveal — come from behind */
+        .chapter-section {
+            opacity: 0;
+            transform: translateY(30px) scale(0.97);
+            transition: opacity 1s ease, transform 1s ease;
+        }
+
+        .chapter-section.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        /* Glowing divider */
+        .glow-divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #e8457a, #c084fc, #e8457a, transparent);
+            animation: glowPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+
+            0%,
+            100% {
+                opacity: 0.5;
+                filter: blur(1px);
+            }
+
+            50% {
+                opacity: 1;
+                filter: blur(0px);
+            }
+        }
+
+        /* Title shimmer */
+        .shimmer {
+            background: linear-gradient(120deg, #f9a8d4, #f472b6, #e879f9, #c084fc, #f9a8d4);
+            background-size: 300% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer 4s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* Petal rain */
+        .petal {
+            position: absolute;
+            top: -20px;
+            z-index: 1;
+            pointer-events: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50% 0 50% 0;
+            background: linear-gradient(135deg, #f9a8d4, #f472b6);
+            opacity: 0;
+            animation: petalFall linear infinite;
+        }
+
+        @keyframes petalFall {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px) rotate(0deg) translateX(0);
+            }
+
+            10% {
+                opacity: 0.5;
+            }
+
+            90% {
+                opacity: 0.3;
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(100vh) rotate(720deg) translateX(80px);
+            }
+        }
+
+        /* Stars bg */
+        .star {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            background: white;
+            z-index: 0;
+            animation: twinkle 3s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+
+            0%,
+            100% {
+                opacity: 0.2;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.8;
+                transform: scale(1.5);
+            }
+        }
+
+        /* Scroll progress */
+        #progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            z-index: 50;
+            background: linear-gradient(90deg, #fbcfe8, #f472b6, #c084fc);
+            box-shadow: 0 0 10px rgba(244, 114, 182, 0.8), 0 0 20px rgba(244, 114, 182, 0.4);
+            transition: width 0.1s ease-out;
+        }
+
+        /* Custom Text Selection */
+        ::selection {
+            background-color: #fbcfe8;
+            /* pink-200 */
+            color: #831843;
+            /* pink-900 */
+        }
+
+        /* Fairytale Drop Cap */
+        .drop-cap::first-letter {
+            float: left;
+            font-size: 5.5rem;
+            line-height: 0.8;
+            padding-right: 0.6rem;
+            padding-top: 0.4rem;
+            font-family: 'Great Vibes', cursive;
+            color: #fbcfe8;
+            text-shadow: 0 0 15px rgba(244, 114, 182, 0.6);
+        }
+
+        /* Love Letter Parchment */
+        .letter-wrap {
+            background: linear-gradient(160deg, #fdf6e3 0%, #faebd7 50%, #f5deb3 100%);
+            border-radius: 4px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), inset 0 0 30px rgba(139, 90, 43, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .letter-wrap::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: repeating-linear-gradient(transparent,
+                    transparent 31px,
+                    rgba(180, 140, 100, 0.15) 31px,
+                    rgba(180, 140, 100, 0.15) 32px);
+            pointer-events: none;
+        }
+
+        .letter-wrap::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at top left, rgba(255, 255, 255, 0.3) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .letter-font {
+            font-family: 'Caveat', cursive;
+            color: #3d2b1f;
+            line-height: 2.1;
+        }
+
+        .wax-seal {
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle at 35% 35%, #e05c7a, #9b1c3a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(155, 28, 58, 0.5), inset 0 -2px 8px rgba(0, 0, 0, 0.2);
+            font-size: 2rem;
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .wax-seal::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            border: 2px dashed rgba(155, 28, 58, 0.4);
+        }
+
+        .torn-edge {
+            height: 20px;
+            background: linear-gradient(160deg, #fdf6e3 0%, #faebd7 50%, #f5deb3 100%);
+            clip-path: polygon(0% 0%, 3% 100%, 6% 20%, 9% 100%, 12% 10%, 15% 90%, 18% 5%, 21% 100%, 24% 15%, 27% 95%, 30% 0%, 33% 100%, 36% 20%, 39% 100%, 42% 0%, 45% 100%, 48% 15%, 51% 100%, 54% 0%, 57% 95%, 60% 10%, 63% 100%, 66% 5%, 69% 90%, 72% 0%, 75% 100%, 78% 15%, 81% 95%, 84% 0%, 87% 100%, 90% 20%, 93% 100%, 96% 0%, 100% 100%, 100% 0%);
+        }
+
+        /* Paragraph break - override space-y */
+        .para-break {
+            margin-top: 1.5rem !important;
+        }
+
+        /* Fade in up animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 1.5s ease-out forwards;
+        }
+
+        /* Elegant Soft Romantic Gradient Text */
+        @keyframes subtleFlow {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .romantic-gradient-text {
+            background: linear-gradient(to right, #fce7f3, #f472b6, #c084fc, #f472b6, #fce7f3);
+            background-size: 200% auto;
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: subtleFlow 4s linear infinite;
+            filter: drop-shadow(0 0 10px rgba(244, 114, 182, 0.5));
+        }
+
+        /* Typewriter cursor blink */
+        @keyframes twCursor {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+
+    </style>
+</head>
+
+<body class="text-pink-100 min-h-screen relative overflow-x-hidden">
+
+
+    <!-- Progress Bar -->
+    <div id="progress-bar" style="width:0%"></div>
+
+    <!-- Stars -->
+    <div id="stars"></div>
+    <!-- Petals -->
+    <div id="petals"></div>
+    <!-- Floating Hearts -->
+    <div id="hearts"></div>
+
+    <!-- Main Content -->
+    <main class="relative z-10 max-w-2xl mx-auto px-5 sm:px-8 py-10 sm:py-16">
+
+        <!-- COVER -->
+        <section class="chapter-section text-center min-h-[90vh] flex flex-col items-center justify-center relative">
+            <div class="relative z-10 animate-fade-in-up mt-10">
+                <p class="font-script text-4xl sm:text-5xl text-pink-300/80 mb-6 drop-shadow-sm">A story written by the
+                    heart...</p>
+
+                <h1 id="hero-title"
+                    class="font-serif text-5xl sm:text-7xl font-semibold tracking-wide leading-tight mb-8 romantic-gradient-text" aria-label="The Secretary's Heart"></h1>
+
+                <div class="flex flex-col items-center justify-center space-y-3">
+                    <p class="font-body text-lg sm:text-xl text-pink-200/90 italic tracking-wide">Inspired By True
+                        Events</p>
+                    <p class="font-body text-base sm:text-lg text-pink-300/70 tracking-wide">Written by Secretary
+                        himself...</p>
+                </div>
+            </div>
+
+            <a href="#story-start"
+                class="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center opacity-100 cursor-pointer group">
+                <span
+                    class="font-body text-base text-pink-300 tracking-widest mb-2 group-hover:text-pink-200 transition-colors drop-shadow-md">Begin</span>
+                <svg class="w-8 h-8 text-pink-400 group-hover:text-pink-300 transition-colors drop-shadow-md animate-bounce"
+                    fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                </svg>
+            </a>
+        </section>
+
+        <div class="glow-divider my-12 sm:my-16"></div>
+
+        <!-- BEFORE EVERYTHING -->
+        <section id="story-start" class="chapter-section mb-16 sm:mb-24 scroll-mt-24">
+            <h2 class="font-serif text-3xl sm:text-4xl font-bold text-pink-300 mb-8 text-center">Before Everything...
+            </h2>
+            <div class="font-body text-base sm:text-lg text-pink-100 leading-relaxed sm:leading-loose space-y-1">
+                <p class="drop-cap">I never believed in destiny.</p>
+                <p>Not really.</p>
+                <p>I thought the destiny was something that people used for explain the things that couldn't understand.
+                    A comfortable lie. A beautiful excuse.</p>
+                <p class="para-break">But then it happened.</p>
+                <p>Now I don't know what to believe anymore.</p>
+                <p class="para-break">Some stories begin so quietly that you don't even realize that you are inside one.
+                </p>
+                <p class="para-break">This is one of those stories.</p>
+                <p class="para-break">How do I explain two people sitting on the same classroom in pre-school as kids...
+                    forgetting each other completely for a long time... and finding each other again years later.</p>
+                <p class="para-break">In a history class.</p>
+                <p class="para-break">Maybe that was the universe trying to tell us something... that we had... it was
+                    already history.</p>
+                <p class="para-break">This is the story of the secretary and his Madam.</p>
+                <p>And it began long before either of them knew it had begun.</p>
+            </div>
+        </section>
+
+        <!-- CHAPTER ONE -->
+        <section class="chapter-section mb-16 sm:mb-24 mt-24 sm:mt-32">
+            <h2 class="font-serif text-2xl sm:text-3xl font-bold text-pink-200 text-center tracking-wide mb-4">Chapter
+                One – The Forgotten Classroom</h2>
+            <div class="glow-divider mb-8 sm:mb-12"></div>
+            <div class="font-body text-base sm:text-lg text-pink-100 leading-relaxed sm:leading-loose space-y-1">
+                <p>Once upon a time.</p>
+                <p>There was a classroom called Lotus.</p>
+                <p>I know that now.</p>
+                <p>But I forgot about it for years.</p>
+                <p class="para-break">The desks. The faces. The walls.</p>
+                <p>All forgotten.</p>
+                <p class="para-break">But she was there, with bright eyes, and a warmer smile.</p>
+                <p>Sitting somewhere in that classroom.</p>
+                <p>Living in her childhood. Having no idea that the boy in the classroom would one day lose his sleep
+                    over her.</p>
+                <p class="para-break">And I was there too.</p>
+                <p>Just a kid.</p>
+                <p>Breathing the same air as someone who would one day changed everything inside me without even trying.
+                </p>
+                <p class="para-break">The same classroom. Same teacher. Same world.</p>
+                <p>And we both forgot.</p>
+                <p class="para-break">They may have laughed together once.</p>
+                <p>They may have shared a pencil or borrowed an eraser.</p>
+                <p class="para-break">Small moments... forgettable moments.</p>
+                <p>Or so they thought.</p>
+                <p class="para-break">Because what we didn't know, both of them couldn't possibly understand at that age
+                    was that the universe was already writing their story.</p>
+                <p class="para-break">Quietly. Patiently. Even without asking their permission.</p>
+                <p class="para-break">The universe had planted a seed in the little Lotus classroom.</p>
+                <p>And then waited.</p>
+                <p class="para-break">And they drifted apart without even saying goodbye.</p>
+            </div>
+        </section>
+
+        <!-- CHAPTER TWO -->
+        <section class="chapter-section mb-16 sm:mb-24 mt-24 sm:mt-32">
+            <h2 class="font-serif text-2xl sm:text-3xl font-bold text-pink-200 text-center tracking-wide mb-4">Chapter
+                Two – Time The Thief</h2>
+            <div class="glow-divider mb-8 sm:mb-12"></div>
+            <div class="font-body text-base sm:text-lg text-pink-100 leading-relaxed sm:leading-loose space-y-1">
+                <p>Time passed the way it always does.</p>
+                <p>Without any mercy. Silently. Without warning.</p>
+                <p class="para-break">The childhood became a collection of blurry images and faded the laughter.</p>
+                <p class="para-break">The Lotus classroom became a distant memory.</p>
+                <p class="para-break">She grew up. He grew up.</p>
+                <p>Life pulled them in different ways the way life always does.</p>
+                <p>Years went by.</p>
+                <p>He forgot her name.</p>
+                <p>She forgot his face.</p>
+                <p class="para-break">And the seed that the universe had planted in that little classroom lay down under
+                    the soil of time, waiting for the right moment to grow.</p>
+                <p class="para-break">I didn't think about that classroom.</p>
+                <p>I didn't think about the girl who sat somewhere in it.</p>
+                <p class="para-break">How could I? I didn't even remember her name at least.</p>
+                <p class="para-break">But the universe remembered!</p>
+                <p>The universe knew something we didn't.</p>
+                <p class="para-break">It never tells you what it's planning!!</p>
+            </div>
+        </section>
+
+        <!-- CHAPTER THREE -->
+        <section class="chapter-section mb-16 sm:mb-24 mt-24 sm:mt-32">
+            <h2 class="font-serif text-2xl sm:text-3xl font-bold text-pink-200 text-center tracking-wide mb-4">Chapter
+                Three – History Class</h2>
+            <div class="glow-divider mb-8 sm:mb-12"></div>
+            <div class="font-body text-base sm:text-lg text-pink-100 leading-relaxed sm:leading-loose space-y-1">
+                <p>Nobody told me it would happened in history class.</p>
+                <p class="para-break">Just another ordinary day.</p>
+                <p>Just another ordinary class.</p>
+                <p class="para-break">I walked in, sat down, opened my book, keep doing my own works.</p>
+                <p class="para-break">And then someone came in...</p>
+                <p>She walked in with her friend.</p>
+                <p class="para-break">Something happened inside me that I still can't explain properly.</p>
+                <p>It wasn't dramatic. No music. No lightning.</p>
+                <p>It was quieter than that.</p>
+                <p class="para-break">Like a memory trying to come back from somewhere very deep.</p>
+                <p class="para-break">"I know her"</p>
+                <p class="para-break">That's what my mind was wandering.</p>
+                <p class="para-break">I looked at her.</p>
+                <p>And she looked at me.</p>
+                <p>Just for a moment.</p>
+                <p>Something that had been sleeping for years suddenly opened its eyes.</p>
+                <p class="para-break">Quietly. Permanently.</p>
+                <p class="para-break">That morning during the interval, I found mangoes.</p>
+                <p>There was a tree just outside the classroom.</p>
+                <p>We grabbed a few, got together and ate.</p>
+                <p class="para-break">I didn't think anything of it.</p>
+                <p>But she noticed.</p>
+                <p class="para-break">That evening she walked into history class with mangoes.</p>
+                <p>Properly prepared this time.</p>
+                <p>Salt. Chilli. Sugar.</p>
+                <p>They were absolutely delicious!</p>
+                <p class="para-break">I ate them without even thinking.</p>
+                <p>She watched me eating and smiled.</p>
+                <p class="para-break">"I brought it because of him," she said so casually.</p>
+                <p class="para-break">It's something about the way she stayed with me.</p>
+                <p>She had noticed me.</p>
+                <p>She had done something small for me.</p>
+                <p class="para-break">The sweetest moments never warn you. ❤️‍🩹</p>
+            </div>
+        </section>
+
+        <!-- CHAPTER FOUR -->
+        <section class="chapter-section mb-16 sm:mb-24 mt-24 sm:mt-32">
+            <h2 class="font-serif text-2xl sm:text-3xl font-bold text-pink-200 text-center tracking-wide mb-4">Chapter
+                Four – Seven Days of Excuses</h2>
+            <div class="glow-divider mb-8 sm:mb-12"></div>
+            <div class="font-body text-base sm:text-lg text-pink-100 leading-relaxed sm:leading-loose space-y-1">
+                <p>Having feelings for someone makes you stupid. It turns us into a Overthinker</p>
+                <p>Not permanently.</p>
+                <p class="para-break">I saw her more than once a week... I wanna see her more than once a week but there
+                    wasn't a way.</p>
+                <p>Even if I had her number, I had a perfect good reason for not to text her.</p>
+                <p class="para-break">Monday - "What if her mother checks her text"</p>
+                <p>Tuesday - "Not the right moment"</p>
+                <p>Wednesday - "What if she likes someone else"</p>
+                <p>Thursday - "What if she doesn't reply"</p>
+                <p>Like that</p>
+                <p class="para-break">Maybe the universe watching this whole performance in my mind.</p>
+                <p>“What if she doesn’t reply”</p>
+                <p>“What if she does” “What do I say after texting”</p>
+                <p>There were lot of things that keep my mind wandering around.</p>
+                <p class="para-break">I had no idea of she even felt anything.</p>
+                <p>Maybe she did</p>
+                <p>Maybe she didn’t</p>
+                <p>By the way I had a hope</p>
+                <p>That hope keeps him alive</p>
+                <p class="para-break">Maybe the universe watching this whole performance...</p>
+                <p>"Just talk to her. It's not that complicated" My mind keep wandering</p>
+                <p class="para-break">But when you like someone, everything becomes complicated.</p>
+                <p>So he waited.</p>
+                <p>He told himself to be patient.</p>
+                <p>Or maybe the universe already planned how this is gonna happen.</p>
+                <p class="para-break">And eventually.</p>
+                <p>It happened!</p>
+            </div>
+        </section>
+
+        <!-- CHAPTER FIVE -->
+        <section class="chapter-section mb-16 sm:mb-24 mt-24 sm:mt-32">
+            <h2 class="font-serif text-2xl sm:text-3xl font-bold text-pink-200 text-center tracking-wide mb-4">Chapter
+                Five – Just A Homework</h2>
+            <div class="glow-divider mb-8 sm:mb-12"></div>
+            <div class="font-body text-base sm:text-lg text-pink-100 leading-relaxed sm:leading-loose space-y-1">
+                <p>It didn't come back the way I expected.</p>
+                <p>Not a perfect moment. Not a grand plan.</p>
+                <p>Just a message on an ordinary evening.</p>
+                <p class="para-break">“Eyy”</p>
+                <p>“Hlow”</p>
+                <p>"Can you send me last week's note?"</p>
+                <p class="para-break">Simple! Innocent!</p>
+                <p>Just a student asking about class notes.</p>
+                <p>I was so surprised.. It’s her.</p>
+                <p>That couldn't even remember what the notes were.</p>
+                <p class="para-break">My brain was completely stopped working.</p>
+                <p>The joke was on me really...</p>
+                <p>But somehow, we started to talk anyway</p>
+                <p class="para-break">This conversation didn't last long.</p>
+                <p>Just few messages... Just few notes.</p>
+                <p>And then silence again.</p>
+                <p class="para-break">But one day something was different.</p>
+                <p>The conversation didn't stop.</p>
+                <p>One message became two. Two became ten.</p>
+                <p>I forgot to check time.</p>
+                <p>I forgot to stop.</p>
+                <p>And just like that.</p>
+                <p>Everything changed!</p>
+            </div>
+        </section>
+
+        <!-- CHAPTER SIX -->
+        <section class="chapter-section mb-16 sm:mb-24 mt-24 sm:mt-32">
+            <h2 class="font-serif text-2xl sm:text-3xl font-bold text-pink-200 text-center tracking-wide mb-4">Chapter
+                Six – Natural</h2>
+            <div class="glow-divider mb-8 sm:mb-12"></div>
+            <div class="font-body text-base sm:text-lg text-pink-100 leading-relaxed sm:leading-loose space-y-1">
+                <p>I don't know what happened exactly.</p>
+                <p>That's the honest answer.</p>
+                <p>Oneday the conversations were short.</p>
+                <p>Oneday she was just the first classmate.</p>
+                <p>The next day she was the first thing I thought about in the morning</p>
+                <p class="para-break">No warning. No announcement.</p>
+                <p>Just... natural.</p>
+                <p>Like breathing.</p>
+                <p>Like she had always been there in my mind, I had never noticed until now.</p>
+                <p class="para-break">We talked about Churches</p>
+                <p>We talked about Religions</p>
+                <p>And something changed inside me quietly.</p>
+                <p class="para-break">Not dramatically.</p>
+                <p>Not suddenly.</p>
+                <p class="para-break">Just slowly and honestly.</p>
+                <p>The way real things always happen.</p>
+            </div>
+        </section>
+
+        <!-- CHAPTER SEVEN -->
+        <section class="chapter-section mb-16 sm:mb-24 mt-24 sm:mt-32">
+            <h2 class="font-serif text-2xl sm:text-3xl font-bold text-pink-200 text-center tracking-wide mb-4">Chapter
+                Seven – The Silence</h2>
+            <div class="glow-divider mb-8 sm:mb-12"></div>
+            <div class="font-body text-base sm:text-lg text-pink-100 leading-relaxed sm:leading-loose space-y-1">
+                <p>And then she disappeared.</p>
+                <p>Just like that.</p>
+                <p>No warning! No goodbye!</p>
+                <p class="para-break">The conversation simply stopped.</p>
+                <p class="para-break">I told myself it was nothing</p>
+                <p>People get busy. Life happens commonly in life.</p>
+                <p>But I Noticed</p>
+                <p>I notice like the way someone notice when a song suddenly stops in a room</p>
+                <p>Everything felt a little quieter than before..</p>
+                <p>A little more ordinary.</p>
+                <p class="para-break">I had too much dignity for that.</p>
+                <p>So I just waited.</p>
+                <p class="para-break">Without admitting myself “I was waiting”</p>
+                <p>Without admitting myself “How much those conversations matter to me”</p>
+                <p class="para-break">She had quietly become someone</p>
+                <p>Special, Important</p>
+                <p>And I had absolutely no idea if she even knew that.</p>
+            </div>
+        </section>
+
+        <!-- CHAPTER EIGHT -->
+        <section class="chapter-section mb-16 sm:mb-24 mt-24 sm:mt-32">
+            <h2 class="font-serif text-2xl sm:text-3xl font-bold text-pink-200 text-center tracking-wide mb-4">Chapter
+                Eight – After The Silence</h2>
+            <div class="glow-divider mb-8 sm:mb-12"></div>
+            <div class="font-body text-base sm:text-lg text-pink-100 leading-relaxed sm:leading-loose space-y-1">
+                <p>Time has passed.</p>
+                <p>I'm not sure how much.</p>
+                <p>Enough for me to convince myself I was completely fine.</p>
+                <p>Long enough for me to stop checking my phone every five minutes.</p>
+                <p>Almost enough to forget a bit.</p>
+                <p class="para-break">Then one day... she was back.</p>
+                <p>Like nothing happened.</p>
+                <p>Like she hadn't disappeared</p>
+                <p class="para-break">I replied casually.</p>
+                <p>Very casually</p>
+                <p class="para-break">But this time something was very different.</p>
+                <p>This time the conversation didn't stop.</p>
+                <p>It just kept going.</p>
+                <p>Deeper than before.</p>
+                <p>Longer than before.</p>
+                <p>More honest than before.</p>
+                <p class="para-break">Hours passed without warning</p>
+                <p>I didn’t notice...</p>
+                <p>She didn’t care...</p>
+                <p class="para-break">Something settled in my chest.</p>
+                <p class="para-break">Quietly.</p>
+                <p>That kind of feeling doesn't ask for permission.</p>
+                <p class="para-break">This one matters!</p>
+            </div>
+        </section>
+
+        <!-- CHAPTER NINE -->
+        <section class="chapter-section mb-16 sm:mb-24 mt-24 sm:mt-32">
+            <h2 class="font-serif text-2xl sm:text-3xl font-bold text-pink-200 text-center tracking-wide mb-4">Chapter
+                Nine – The Greatest Offer</h2>
+            <div class="glow-divider mb-8 sm:mb-12"></div>
+            <div class="font-body text-base sm:text-lg text-pink-100 leading-relaxed sm:leading-loose space-y-1">
+                <p>In a one evening she said something unexpected.</p>
+                <p class="para-break">"If you like... you can be my private secretary"</p>
+                <p class="para-break">I said "Of course I like" so fast</p>
+                <p>And smiled at my screen</p>
+                <p>Because something about the offer felt so right.</p>
+                <p class="para-break">Being part of her world in any way felt like something worth saying yes to.</p>
+                <p>What I didn't tell her was that I would have said yes to anything she offered.</p>
+                <p class="para-break">I accepted the position.</p>
+                <p>Best decision I ever made...</p>
+            </div>
+        </section>
+
+        <!-- CHAPTER TEN -->
+        <section class="chapter-section mb-16 sm:mb-24 mt-24 sm:mt-32">
+            <h2 class="font-serif text-2xl sm:text-3xl font-bold text-pink-200 text-center tracking-wide mb-4">Chapter
+                Ten – What She Noticed</h2>
+            <div class="glow-divider mb-8 sm:mb-12"></div>
+            <div class="font-body text-base sm:text-lg text-pink-100 leading-relaxed sm:leading-loose space-y-1">
+                <p>She noticed things about me.</p>
+                <p>And she told me.</p>
+                <p>That was the part I didn't except</p>
+                <p>Not just that she noticed, she actually told me...</p>
+                <p class="para-break">My hair</p>
+                <p>My personality.</p>
+                <p>My writing.</p>
+                <p class="para-break">Each one said casually. Like they were just simple facts.</p>
+                <p>Like the nicest things anyone ever told to me.</p>
+                <p class="para-break">I tried to act normal.</p>
+                <p class="para-break">But it wasn't normal.</p>
+                <p class="para-break">Because, hidden inside those each complement was something she wasn't saying out
+                    loud yet.</p>
+                <p class="para-break">Like "You matter to me!"</p>
+            </div>
+        </section>
+
+        <!-- CHAPTER ELEVEN -->
+        <section class="chapter-section mb-16 sm:mb-24 mt-24 sm:mt-32">
+            <h2 class="font-serif text-2xl sm:text-3xl font-bold text-pink-200 text-center tracking-wide mb-4">Chapter
+                Eleven – The Secretary Has Fallen</h2>
+            <div class="glow-divider mb-8 sm:mb-12"></div>
+            <div class="font-body text-base sm:text-lg text-pink-100 leading-relaxed sm:leading-loose space-y-1">
+                <p>Somethings can't stay inside forever.</p>
+                <p>She taught me that.</p>
+                <p class="para-break">One evening she asked me something.</p>
+                <p class="para-break">"Why don't you get bored?"</p>
+                <p>Just five words.</p>
+                <p>But they carried something inside them.</p>
+                <p class="para-break">She didn't even wait for the answer though,</p>
+                <p>She pulled it out of me.</p>
+                <p class="para-break">"If you don't say, you're fired"</p>
+                <p class="para-break">I could almost feel her smiling through the screen.</p>
+                <p>So, I said it.</p>
+                <p class="para-break text-pink-200 font-bold">"Seems like the secretary has fallen for his madam"</p>
+                <p class="para-break">Silence!</p>
+                <p class="para-break">"Really. It's an honour for me"</p>
+                <p class="para-break">I put my phone down slowly.</p>
+                <p>Looked at the ceiling.</p>
+                <p>Smiled at nothing.</p>
+                <p class="para-break">But that wasn’t the end of the night</p>
+                <p>Because after that</p>
+                <p>She changed the Topic</p>
+                <p>Just like that,</p>
+                <p>Like she had not said something that meant Everything</p>
+                <p class="para-break">I Let her</p>
+                <p>I didn't ask again</p>
+                <p>Cause, Some moments don’t need to be Chased</p>
+                <p>They need to be felt ❤️‍🩹</p>
+                <p class="para-break">And that night</p>
+                <p class="text-pink-200 font-bold">I felt Everything...</p>
+            </div>
+        </section>
+
+        <!-- CHAPTER TWELVE -->
+        <section class="chapter-section mb-16 sm:mb-24 mt-24 sm:mt-32">
+            <h2 class="font-serif text-2xl sm:text-3xl font-bold text-pink-200 text-center tracking-wide mb-4">Chapter
+                Twelve – The Ceiling and I</h2>
+            <div class="glow-divider mb-8 sm:mb-12"></div>
+            <div class="font-body text-base sm:text-lg text-pink-100 leading-relaxed sm:leading-loose space-y-1">
+                <p>She fell asleep easily that night.</p>
+                <p>I didn't.</p>
+                <p>I lay in the darkness of my room.</p>
+                <p>And I went back to read our old conversations...</p>
+                <p class="para-break">And I laughed.</p>
+                <p>Actually laughed. Alone at midnight.</p>
+                <p>At the jokes, At the random massages</p>
+                <p class="para-break">Funny how the same conversations That made me laugh again,</p>
+                <p>Were the same ones that made me feel something real.</p>
+                <p>Real enough to matter.</p>
+            </div>
+        </section>
+
+        <!-- CHAPTER THIRTEEN -->
+        <section class="chapter-section mb-16 sm:mb-24 mt-24 sm:mt-32">
+            <h2 class="font-serif text-2xl sm:text-3xl font-bold text-pink-200 text-center tracking-wide mb-4">Chapter
+                Thirteen – Same Class, What Idiot!</h2>
+            <div class="glow-divider mb-8 sm:mb-12"></div>
+            <div class="font-body text-base sm:text-lg text-pink-100 leading-relaxed sm:leading-loose space-y-1">
+                <p>Oneday we started talking about childhood.</p>
+                <p>Just casually...</p>
+                <p class="para-break">"What class were you in?" I asked.</p>
+                <p>"Lotus," she said.</p>
+                <p>Then she asked mine.</p>
+                <p>Honestly, I didn't even remember What class I was in...</p>
+                <p class="para-break text-pink-200 font-bold">"You're from my class, Idiot."</p>
+                <p class="para-break">I laughed alone in my room.</p>
+                <p>Same classroom, Same teacher, Same World</p>
+                <p>And we both forgot each other existed. The universe had been holding this for exactly the right
+                    moment.</p>
+                <p>Sometimes Love doesn't start from the first meeting.</p>
+                <p class="para-break">Sometimes the person who was always meant to be in your story,</p>
+                <p>Was there since the very first page.</p>
+            </div>
+        </section>
+
+        <!-- CHAPTER FOURTEEN -->
+        <section class="chapter-section mb-16 sm:mb-24 mt-24 sm:mt-32">
+            <h2 class="font-serif text-2xl sm:text-3xl font-bold text-pink-200 text-center tracking-wide mb-4">Chapter
+                Fourteen – The Memories We Lost and Found</h2>
+            <div class="glow-divider mb-8 sm:mb-12"></div>
+            <div class="font-body text-base sm:text-lg text-pink-100 leading-relaxed sm:leading-loose space-y-1">
+                <p>After we talked about childhood memories for long time...</p>
+                <p class="para-break">Memories come back slowly.</p>
+                <p>The same school.</p>
+                <p>The same halls.</p>
+                <p>The same years we lived through.</p>
+                <p>Separately Without knowing we were living them together.</p>
+                <p class="para-break">It was strange in the best possible way.</p>
+                <p>Two people rediscovering a shared past</p>
+                <p>They had both forgotten.</p>
+                <p class="para-break">Laughing at the things that happened years ago.</p>
+                <p>Finding each other inside old memories Neither of us had thought about in years.</p>
+                <p>She replied simply. "That's my job."</p>
+                <p>Three words.</p>
+                <p>But inside them was Everything.</p>
+            </div>
+        </section>
+
+        <!-- CHAPTER FIFTEEN -->
+        <section class="chapter-section mb-16 sm:mb-24 mt-24 sm:mt-32">
+            <h2 class="font-serif text-2xl sm:text-3xl font-bold text-pink-200 text-center tracking-wide mb-4">Chapter
+                Fifteen – The Greatest Promotion</h2>
+            <div class="glow-divider mb-8 sm:mb-12"></div>
+            <div class="font-body text-base sm:text-lg text-pink-100 leading-relaxed sm:leading-loose space-y-1">
+                <p>Oneday she said something unexpected.</p>
+                <p>"There's a position that suits you better."</p>
+                <p>I smiled at that.,</p>
+                <p>“Is it a promotion?"</p>
+                <p>"Little bit," she smiled through the screen.</p>
+                <p class="para-break">I knew what she meant.</p>
+                <p>She knew that I knew.</p>
+                <p>But neither of us said it loud yet.</p>
+                <p>But it was there!</p>
+                <p class="para-break">But somethings are worth waiting for...</p>
+                <p>I was willing.</p>
+                <p>I am still willing.</p>
+                <p>The best things always make you wait Just long enough to make sure you really want them,</p>
+                <p class="para-break text-pink-200 font-bold">And I really want this. 💞</p>
+            </div>
+        </section>
+
+        <!-- CHAPTER SIXTEEN -->
+        <section class="chapter-section mb-16 sm:mb-24 mt-24 sm:mt-32">
+            <h2 class="font-serif text-2xl sm:text-3xl font-bold text-pink-200 text-center tracking-wide mb-4">Chapter
+                Sixteen – Full Time, Both Ways</h2>
+            <div class="glow-divider mb-8 sm:mb-12"></div>
+            <div class="font-body text-base sm:text-lg text-pink-100 leading-relaxed sm:leading-loose space-y-1">
+                <p>One evening I went offline briefly.</p>
+                <p>Maybe for a minute.</p>
+                <p>Maybe less.</p>
+                <p>But she noticed that.</p>
+                <p>"Don't break the rules. This is full time."</p>
+                <p>I thought about that for a long time.</p>
+                <p>Because she was right.</p>
+                <p>This is full time.</p>
+                <p>Not just for me. For both of us.</p>
+                <p class="para-break">She noticed when I disappear.</p>
+                <p>I can't sleep when she's on my mind.</p>
+                <p>She gave me a role that no one else has.</p>
+                <p>We talked until neither of us could keep track of time.</p>
+                <p>We share memories neither of us knew we had together.</p>
+                <p class="para-break">This is full time.</p>
+                <p>Both ways.</p>
+                <p>Even before it's official.</p>
+                <p>Even with the promotion still pending.</p>
+                <p>This is the realest thing I already have...</p>
+            </div>
+        </section>
+
+        <!-- CHAPTER SEVENTEEN -->
+        <section class="chapter-section mb-16 sm:mb-24 mt-24 sm:mt-32">
+            <h2 class="font-serif text-2xl sm:text-3xl font-bold text-pink-200 text-center tracking-wide mb-4">Chapter
+                Seventeen – Beyond the Story</h2>
+            <div class="glow-divider mb-8 sm:mb-12"></div>
+            <div class="font-body text-base sm:text-lg text-pink-100 leading-relaxed sm:leading-loose space-y-1">
+                <p>Love is not an acquisition (making someone yours).</p>
+                <p>It's not you to chase down and claim.</p>
+                <p>Not something you win or lose.</p>
+                <p>I used to think having feelings for someone meant you were supposed to do everything using your power
+                    to make them yours.</p>
+                <p>But those late-night conversations and sleepless midnights had something to teach me.</p>
+                <p class="para-break">I understood something.</p>
+                <p>Maybe she'll be mine.</p>
+                <p>Maybe she won't.</p>
+                <p>And I'm genuinely okay with both.</p>
+                <p>Because what we have right now is the strange beautiful, undefined space between us...</p>
+                <p>The memories we rediscovered. The conversations that go nowhere and everywhere at the same time. The
+                    inside jokes only belonging to us.</p>
+                <p>That's already something real.</p>
+                <p class="para-break">Maybe what we have discovered now is little.</p>
+                <p>But it matters to me more than I can explain.</p>
+                <p>And there are lots of things that we haven't discovered yet. The memories we haven't made. The
+                    experiences waiting somewhere ahead of us.</p>
+                <p>Maybe we'll discover them together.</p>
+                <p>Maybe we won't.</p>
+                <p>I'm not rushing it. I'm just here...</p>
+                <p>Fully!... Honestly!... Without conditions!...</p>
+                <p>And whatever happens next, I'm ready for it.</p>
+                <p>Because the only thing I know for sure. The one thing that has never changed through all of this.</p>
+                <p class="para-break">Is that...</p>
+                <p
+                    class="para-break text-2xl sm:text-3xl font-serif text-pink-300 font-bold text-center drop-shadow-md mt-8 mb-4 tracking-wide">
+                    I Love her... Forever and ever ❤️✨</p>
+            </div>
+        </section>
+
+        <!-- CHAPTER EIGHTEEN -->
+        <section class="chapter-section mb-16 sm:mb-24 mt-24 sm:mt-32">
+            <h2 class="font-serif text-2xl sm:text-3xl font-bold text-pink-200 text-center tracking-wide mb-4">Chapter
+                Eighteen – To Be Continued...</h2>
+            <div class="glow-divider mb-8 sm:mb-12"></div>
+            <div class="font-body text-base sm:text-lg text-pink-100 leading-relaxed sm:leading-loose space-y-1">
+                <p>Every story needs an Ending.</p>
+                <p>This one is still waiting for its.⏳</p>
+                <p>I wrote every chapter of this story.</p>
+                <p>Every moment, Feelings, Every memory...</p>
+                <p class="para-break">But the last one isn't mine to write.</p>
+                <p>It never was.</p>
+                <p class="para-break">Because this story was never just about me.</p>
+                <p>It was about US.. 💖</p>
+                <p class="para-break">So, the secretary is one step ahead from the greatest promotion of his life.</p>
+                <p>From Secretary...</p>
+                <p>To hers,</p>
+                <p class="para-break">Will he get it?</p>
+                <p class="text-pink-200 font-bold">Only she can write this final chapter...🤍</p>
+            </div>
+            <p
+                class="mt-16 sm:mt-24 mb-8 text-2xl sm:text-3xl font-serif text-pink-300 italic text-center tracking-wider drop-shadow-md">
+                The End... or the Beginning?</p>
+        </section>
+
+        <!-- CHAPTER NINETEEN -->
+        <section class="chapter-section mb-16 sm:mb-24 mt-24 sm:mt-32 text-center">
+            <h2 class="font-serif text-2xl sm:text-3xl font-bold text-pink-200 tracking-wide mb-4">Chapter Nineteen – To
+                Be Written by Her</h2>
+            <div class="glow-divider mb-8 sm:mb-12"></div>
+            <div class="font-body text-lg sm:text-xl text-pink-200 leading-relaxed sm:leading-loose">
+                <p class="mb-6">This page belongs to her.</p>
+                <p class="mb-8">Whenever she's ready...</p>
+                <p class="text-4xl sm:text-5xl"></p>
+            </div>
+        </section>
+
+        <!-- LOVE LETTER -->
+        <div class="chapter-section mt-24 sm:mt-32 mb-16">
+            <!-- Section intro -->
+            <p class="font-script text-3xl sm:text-4xl text-pink-300/70 text-center mb-12">And then... he left one last
+                thing.</p>
+
+            <!-- The Letter -->
+            <div class="letter-wrap p-8 sm:p-12 mx-auto max-w-xl relative z-10">
+                <!-- Torn top edge for realism -->
+                <div class="torn-edge w-full absolute top-0 left-0"></div>
+
+                <!-- For Her Eyes Only header -->
+                <p class="letter-font text-center text-base sm:text-lg tracking-widest text-amber-900 uppercase mb-6 pt-4 font-semibold">✦ For Her Eyes Only ✦</p>
+
+                <!-- Letter Body -->
+                <div class="letter-font text-lg sm:text-xl space-y-4">
+                    <p>My dearest,</p>
+                    <p>If you are reading this, then you made it to the end.</p>
+                    <p>And if you made it to the end... then you already know.</p>
+                    <p>You already know how I looked at you before I even knew I was looking.</p>
+                    <p>You already know every word in these pages was never about a story.</p>
+                    <p class="mt-6">It was always about US</p>
+                    <p>Written with you.</p>
+                    <p>Only ever with you.</p>
+                    <p class="mt-6">I don't know what happens next.</p>
+                    <p>But I know this —</p>
+                    <p>Whatever page we are on,</p>
+                    <p>I want to be reading it beside you.</p>
+                    <p class="mt-8 text-right">Forever yours,</p>
+                    <p class="text-right font-semibold">The Secretary 🤍</p>
+                </div>
+
+                <!-- Wax Seal -->
+                <div class="mt-10 mb-2 flex justify-center">
+                    <div class="wax-seal">❤️</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="text-center py-12 sm:py-16 border-t border-pink-500/10">
+            <p class="font-script text-3xl sm:text-4xl shimmer mb-4">The Secretary's Heart</p>
+            <p class="font-body text-pink-300/60 text-sm">Written with love, every single word.</p>
+            <p class="mt-4 text-2xl">💗</p>
+        </footer>
+
+    </main>
+
+    <script>
+        // Create stars
+        const starsContainer = document.getElementById('stars');
+        for (let i = 0; i < 60; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.width = star.style.height = (Math.random() * 2 + 1) + 'px';
+            star.style.animationDelay = Math.random() * 5 + 's';
+            star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            starsContainer.appendChild(star);
+        }
+
+        // Create petals
+        const petalsContainer = document.getElementById('petals');
+        for (let i = 0; i < 12; i++) {
+            const petal = document.createElement('div');
+            petal.className = 'petal';
+            petal.style.left = Math.random() * 100 + '%';
+            petal.style.animationDelay = Math.random() * 10 + 's';
+            petal.style.animationDuration = (Math.random() * 6 + 6) + 's';
+            petalsContainer.appendChild(petal);
+        }
+
+        // Create floating hearts
+        const heartsContainer = document.getElementById('hearts');
+        const heartEmojis = ['💕', '💗', '💖', '❤️', '🩷', '💘'];
+        for (let i = 0; i < 8; i++) {
+            const heart = document.createElement('div');
+            heart.className = 'heart-float';
+            heart.textContent = heartEmojis[i % heartEmojis.length];
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.animationDelay = Math.random() * 12 + 's';
+            heart.style.animationDuration = (Math.random() * 5 + 7) + 's';
+            heartsContainer.appendChild(heart);
+        }
+
+        // Scroll reveal
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.chapter-section').forEach(s => observer.observe(s));
+
+        // Progress bar + Hero Parallax
+        const starsLayer  = document.getElementById('stars');
+        const petalsLayer = document.getElementById('petals');
+        const heartsLayer = document.getElementById('hearts');
+
+        window.addEventListener('scroll', () => {
+            const h   = document.documentElement;
+            const scrollY = h.scrollTop;
+            const vh  = window.innerHeight;
+
+            // Progress bar
+            const pct = (scrollY / (h.scrollHeight - vh)) * 100;
+            document.getElementById('progress-bar').style.width = pct + '%';
+
+            // Parallax only during hero zone (0 → 1.5x viewport height)
+            // Fades out smoothly so stars don't disappear lower in the page
+            let fadeOut = 1;
+            if (scrollY > vh) {
+                fadeOut = Math.max(0, 1 - (scrollY - vh) / (vh * 0.5));
+            }
+            const s = Math.min(scrollY, vh * 1.5);
+            starsLayer.style.transform  = `translateY(${s * 0.18 * fadeOut}px)`;
+            heartsLayer.style.transform = `translateY(${s * 0.28 * fadeOut}px)`;
+            petalsLayer.style.transform = `translateY(${s * 0.38 * fadeOut}px)`;
+        });
+
+        // Interactive Mouse Petals & Hearts
+        document.addEventListener('mousemove', (e) => {
+            const mouseX = e.clientX;
+            const mouseY = e.clientY;
+
+            // Move petals slightly
+            document.querySelectorAll('.petal, .heart-float').forEach(particle => {
+                const rect = particle.getBoundingClientRect();
+                const particleX = rect.left + rect.width / 2;
+                const particleY = rect.top + rect.height / 2;
+
+                const distX = mouseX - particleX;
+                const distY = mouseY - particleY;
+                const distance = Math.sqrt(distX * distX + distY * distY);
+
+                // If mouse is close (within 150px)
+                if (distance < 150) {
+                    const force = (150 - distance) / 150;
+                    const moveX = (distX / distance) * -30 * force;
+                    const moveY = (distY / distance) * -30 * force;
+
+                    // Store current transform or apply offset on top of animation using translate
+                    particle.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                    particle.style.transition = "transform 0.3s ease-out";
+                } else {
+                    particle.style.transform = '';
+                }
+            });
+        });
+
+        // ── Typewriter Effect on Hero Title ──
+        (function () {
+            const el = document.getElementById('hero-title');
+            // Segments: each item is { text, br }
+            const segments = [
+                { text: "The Secretary's", br: true },
+                { text: "Heart", br: false }
+            ];
+            let segIdx = 0, charIdx = 0;
+            let html = '';
+
+            // blinking cursor span
+            const cursor = '<span id="tw-cursor" style="display:inline-block;width:2px;background:currentColor;margin-left:3px;animation:twCursor 0.8s step-end infinite;vertical-align:middle;height:0.8em;"></span>';
+
+            function type() {
+                if (segIdx >= segments.length) {
+                    // done — remove cursor after a pause
+                    setTimeout(() => {
+                        const c = document.getElementById('tw-cursor');
+                        if (c) c.remove();
+                    }, 1200);
+                    return;
+                }
+                const seg = segments[segIdx];
+                if (charIdx < seg.text.length) {
+                    html += seg.text[charIdx];
+                    el.innerHTML = html + (seg.br ? '<br>' : '') + cursor;
+                    charIdx++;
+                    setTimeout(type, 80);
+                } else {
+                    if (seg.br) html += '<br>';
+                    segIdx++;
+                    charIdx = 0;
+                    setTimeout(type, 180); // tiny pause between lines
+                }
+            }
+
+            // Start after the fade-in animation settles
+            setTimeout(type, 800);
+        })();
+
+
+
+    </script>
+</body>
+
+</html>
